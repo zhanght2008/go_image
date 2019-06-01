@@ -3,7 +3,6 @@ package go_image
 import (
 	"bytes"
 	//"errors"
-	"github.com/hunterhug/go_image/graphics"
 	"image"
 	"image/jpeg"
 	"image/png"
@@ -13,6 +12,8 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+
+	"github.com/hunterhug/go_image/graphics"
 )
 
 //按宽度和高度进行比例缩放，输入和输出都是图片字节数组
@@ -163,7 +164,13 @@ func Scale(raw []byte, newdx int) (dst *image.RGBA, filetype string, err error) 
 	bound := src.Bounds()
 	dx := bound.Dx()
 	dy := bound.Dy()
-	dst = image.NewRGBA(image.Rect(0, 0, newdx, newdx*dy/dx))
+	if dx > newdx {
+		dst = image.NewRGBA(image.Rect(0, 0, newdx, newdx*dy/dx))
+	} else {
+		dst = image.NewRGBA(bound)
+
+	}
+	// dst = image.NewRGBA(image.Rect(0, 0, newdx, newdx*dy/dx))
 	// 产生缩略图,等比例缩放
 	err = graphics.Scale(dst, src)
 	return
